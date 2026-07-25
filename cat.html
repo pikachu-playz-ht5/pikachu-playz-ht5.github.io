@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dancing Cat Variations</title>
+    <style>
+        /* 1. Global Reset & Main Layout */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: darkcyan;
+            margin: 0;
+            padding: 100px 20px 40px 20px; /* Top padding prevents overlapping with top bar */
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-sizing: border-box;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Top Navigation Tab Bar */
+        .top-nav-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: rgba(0, 77, 77, 0.95);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            padding: 12px 0;
+            z-index: 2000;
+        }
+
+        .nav-tab {
+            background: transparent;
+            color: #e0f2f1;
+            border: 2px solid transparent;
+            padding: 8px 24px;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .nav-tab:hover {
+            color: #ffffff;
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-tab.active {
+            background-color: #ffffff;
+            color: #004d4d;
+        }
+
+        /* 2. Container to group and center elements */
+        .center-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 25px;
+            max-width: 600px;
+            width: 100%;
+        }
+
+        /* 3. Typography Styles */
+        h2 {
+            color: #ffffff;
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin: 0;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+
+        /* 4. Image Styling */
+        .cat-image {
+            max-width: 100%;
+            height: auto;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            transition: box-shadow 0.3s ease, filter 0.3s ease;
+        }
+
+        /* --- GLOWING AURA EFFECT FOR COOL CAT --- */
+        @keyframes auraGlow {
+            0% {
+                box-shadow: 0 0 25px 8px rgba(0, 255, 255, 0.7), 0 0 50px 20px rgba(255, 0, 255, 0.5);
+                filter: drop-shadow(0 0 15px rgba(0, 255, 255, 0.8));
+            }
+            50% {
+                box-shadow: 0 0 35px 14px rgba(255, 0, 255, 0.9), 0 0 70px 30px rgba(0, 255, 255, 0.7);
+                filter: drop-shadow(0 0 25px rgba(255, 0, 255, 0.9));
+            }
+            100% {
+                box-shadow: 0 0 25px 8px rgba(0, 255, 255, 0.7), 0 0 50px 20px rgba(255, 0, 255, 0.5);
+                filter: drop-shadow(0 0 15px rgba(0, 255, 255, 0.8));
+            }
+        }
+
+        .cat-image.cool-aura {
+            animation: auraGlow 2.5s infinite ease-in-out;
+        }
+
+        /* --- FLOATING GLOWING "AURA" TEXT --- */
+        .floating-aura-text {
+            position: fixed;
+            color: #ffffff;
+            font-weight: 900;
+            letter-spacing: 4px;
+            pointer-events: none; /* Prevents blocking clicks on buttons/tabs */
+            z-index: 1500;
+            opacity: 0;
+            transform: translateY(0) scale(0.8);
+            transition: opacity 1.2s ease-in-out, transform 3s ease-out;
+            text-shadow: 
+                0 0 5px #ffffff,
+                0 0 10px #ffffff,
+                0 0 20px #00ffff,
+                0 0 35px #00ffff,
+                0 0 50px #ff00ff,
+                0 0 70px #ff00ff;
+        }
+
+        .floating-aura-text.visible {
+            opacity: 1;
+            transform: translateY(-40px) scale(1.1);
+        }
+
+        /* 5. Button Styling */
+        #soundButton {
+            background-color: #ffffff;
+            color: #004d4d;
+            font-size: 1rem;
+            font-weight: 600;
+            padding: 14px 32px;
+            border-radius: 9999px;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+        }
+
+        #soundButton:hover {
+            background-color: #f0f0f0;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
+        }
+
+        #soundButton:active {
+            transform: translateY(1px);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+        }
+
+        /* 6. Side Floating Audio Control */
+        .side-audio-control {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: #ffffff;
+            padding: 10px 15px;
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-family: sans-serif;
+            font-size: 0.85rem;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+        }
+
+        .side-audio-control button {
+            background: #ffffff;
+            border: none;
+            color: #333;
+            padding: 5px 12px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.8rem;
+        }
+
+        .side-audio-control button:hover {
+            background: #e0e0e0;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Top Selector Bar to toggle content/music views -->
+    <div class="top-nav-bar">
+        <button class="nav-tab active" id="tabStandard">Standard Cat</button>
+        <button class="nav-tab" id="tabMexican">Mexican Cat</button>
+        <button class="nav-tab" id="tabFancy">Fancy Cat</button>
+    </div>
+
+    <!-- Main View Component Layer -->
+    <div class="center-container">
+        <h2 id="catHeadline">hello i am a dancing CAT</h2>
+        <img id="catImg" src="catdance.png" alt="Description of the animation" width="600" height="400" class="cat-image">
+        <button id="soundButton">Play Sound</button>
+    </div>
+
+    <!-- Audio Node Layout Tree -->
+    <audio id="bgMusic" autoplay loop muted>
+        <source id="bgSource" src="musiccat.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="meowSound">
+        <source src="catmeow.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- Side Floating Controller Widget -->
+    <div class="side-audio-control">
+        <span>🎵 Music</span>
+        <button id="sideToggleBtn">Unmute</button>
+    </div>
+
+    <!-- Logic Execution Layer -->
+    <script>
+        // Component Target Matrix
+        const button = document.getElementById('soundButton');
+        const sideToggleBtn = document.getElementById('sideToggleBtn');
+        const bgMusic = document.getElementById('bgMusic');
+        const bgSource = document.getElementById('bgSource');
+        const meowSound = document.getElementById('meowSound');
+
+        // Dynamic Layout Target Elements
+        const tabStandard = document.getElementById('tabStandard');
+        const tabMexican = document.getElementById('tabMexican');
+        const tabFancy = document.getElementById('tabFancy');
+        const catHeadline = document.getElementById('catHeadline');
+        const catImg = document.getElementById('catImg');
+
+        // Data Map Blueprint for quick view mutations
+        const dataset = {
+            standard: {
+                headline: "hello i am a dancing CAT",
+                imgSrc: "catdance.png",
+                audioSrc: "musiccat.mp3"
+            },
+            mexican: {
+                headline: "hello i am a dancing MEXACON CAT",
+                imgSrc: "mexcat.png",
+                audioSrc: "mexmusic.mp3"
+            },
+            fancy: {
+                headline: "hello i am a cool CAT",
+                imgSrc: "coolcat.png",
+                audioSrc: "coolcat.mp3"
+            }
+        };
+
+        let activeProfile = 'standard';
+
+        // Application View Switch Controller Function
+        function switchProfile(profileKey) {
+            activeProfile = profileKey;
+            const data = dataset[profileKey];
+
+            // 1. Mutate UI elements
+            catHeadline.textContent = data.headline;
+            catImg.src = data.imgSrc;
+
+            // Toggle glowing aura and handle text clean-up
+            if (profileKey === 'fancy') {
+                catImg.classList.add('cool-aura');
+            } else {
+                catImg.classList.remove('cool-aura');
+                // Clean up any existing floating "AURA" text when switching away
+                document.querySelectorAll('.floating-aura-text').forEach(el => el.remove());
+            }
+
+            // 2. Manage active Tab highlights dynamically
+            document.querySelectorAll('.nav-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            if(profileKey === 'standard') tabStandard.classList.add('active');
+            else if(profileKey === 'mexican') tabMexican.classList.add('active');
+            else if(profileKey === 'fancy') tabFancy.classList.add('active');
+
+            // 3. Hot-swap background music streams cleanly
+            const isCurrentlyMuted = bgMusic.muted;
+            const isCurrentlyPaused = bgMusic.paused;
+            
+            bgMusic.pause();
+            bgSource.src = data.audioSrc;
+            bgMusic.load(); // Forces structural stream refresh
+
+            // Maintain persistent media engine values across views
+            bgMusic.muted = isCurrentlyMuted;
+            
+            if (!isCurrentlyPaused) {
+                bgMusic.play().catch(() => {/* Handle browser catch hooks */});
+            } else if (!isCurrentlyMuted) {
+                // If unmuted but paused, kickstart track execution loop
+                bgMusic.play().catch(() => {});
+                sideToggleBtn.textContent = "Pause";
+            }
+        }
+
+        // --- RANDOM GLOWING "AURA" TEXT SPAWNER ---
+        function spawnAuraText() {
+            // Only spawn text when the Fancy Cat (coolcat.png) is active
+            if (activeProfile !== 'fancy') return;
+
+            const auraEl = document.createElement('div');
+            auraEl.textContent = 'AURA';
+            auraEl.className = 'floating-aura-text';
+
+            // Random coordinates keeping a safe distance from screen edges
+            const x = Math.random() * (window.innerWidth - 160) + 40;
+            const y = Math.random() * (window.innerHeight - 180) + 80;
+            
+            // Random font size between 1.2rem and 2.8rem
+            const size = (Math.random() * 1.6 + 1.2).toFixed(1);
+
+            auraEl.style.left = `${x}px`;
+            auraEl.style.top = `${y}px`;
+            auraEl.style.fontSize = `${size}rem`;
+
+            document.body.appendChild(auraEl);
+
+            // Trigger fade-in and drift animation
+            setTimeout(() => {
+                auraEl.classList.add('visible');
+            }, 50);
+
+            // Randomize how long the text stays visible before fading out (1s to 3s)
+            const stayDuration = Math.random() * 2000 + 1000;
+            setTimeout(() => {
+                auraEl.classList.remove('visible');
+                // Remove element from DOM after CSS fade-out transition finishes (1.2s)
+                setTimeout(() => {
+                    auraEl.remove();
+                }, 1200);
+            }, stayDuration);
+        }
+
+        // Continually spawn new "AURA" text at randomized intervals (between 400ms and 900ms)
+        function loopAuraSpawn() {
+            spawnAuraText();
+            const nextSpawn = Math.random() * 500 + 400;
+            setTimeout(loopAuraSpawn, nextSpawn);
+        }
+        loopAuraSpawn();
+        // ------------------------------------------
+
+        // Assign Tab Interaction Handlers
+        tabStandard.addEventListener('click', () => {
+            if(activeProfile !== 'standard') switchProfile('standard');
+        });
+
+        tabMexican.addEventListener('click', () => {
+            if(activeProfile !== 'mexican') switchProfile('mexican');
+        });
+
+        tabFancy.addEventListener('click', () => {
+            if(activeProfile !== 'fancy') switchProfile('fancy');
+        });
+
+        // --- Original Button Feature ---
+        button.addEventListener('click', () => {
+            meowSound.currentTime = 0;
+            meowSound.play();
+            if (bgMusic.muted) {
+                bgMusic.muted = false;
+                bgMusic.play().catch(() => {});
+                sideToggleBtn.textContent = "Pause";
+            }
+        });
+
+        // --- Side Controller Feature (Mute / Unmute & State Core Engine) ---
+        sideToggleBtn.addEventListener('click', () => {
+            if (bgMusic.muted) {
+                bgMusic.muted = false;
+                bgMusic.play().catch(() => {});
+                sideToggleBtn.textContent = "Pause";
+            } else if (bgMusic.paused) {
+                bgMusic.play().catch(() => {});
+                sideToggleBtn.textContent = "Pause";
+            } else {
+                bgMusic.pause();
+                sideToggleBtn.textContent = "Play";
+            }
+        });
+    </script>
+</body>
+</html>
